@@ -1,6 +1,4 @@
-# Decision-Tree-Model-Evaluation
-
-# Project Summary: Decision Tree Classification - Airline Customer Satisfaction Classification
+# Project Summary: Airline Customer Satisfaction Classification
 
 ## 1. Dataset Overview
 
@@ -13,7 +11,7 @@ The goal was to build and optimize a Decision Tree classifier to predict airline
 ### Data Preparation:
 
 *   Loaded the `invistico_Airline1.csv` dataset.
-*   Dropped irrelevant columns.
+*   Dropped irrelevant columns (`Unnamed: 0`, `id` were not found and thus not dropped).
 *   Handled missing values in 'Arrival Delay in Minutes' by imputing with the mean.
 *   Encoded categorical features ('Customer Type', 'Type of Travel', 'Class') and the target variable ('satisfaction') using Label Encoding.
 *   Split the data into training and testing sets (70% train, 30% test) with `stratify=y` to maintain the proportion of satisfaction classes.
@@ -22,13 +20,7 @@ The goal was to build and optimize a Decision Tree classifier to predict airline
 
 ### Tuning Strategy:
 
-`GridSearchCV` was employed to optimize the Decision Tree classifier's hyperparameters, specifically:
-
-*   `max_depth`: `[None, 5, 10, 15, 20]`
-*   `min_samples_split`: `[2, 5, 10, 20]`
-*   `min_samples_leaf`: `[1, 2, 4, 8]`
-
-The optimization used 5-fold cross-validation and `f1_weighted` as the scoring metric to handle potential class imbalance and balance precision and recall across both classes.
+`GridSearchCV` was employed to systematically explore combinations of `max_depth`, `min_samples_split`, and `min_samples_leaf`. This comprehensive search ensured that the model was optimized to prevent overfitting (by limiting complexity) and improve generalization on unseen data, focusing on balancing precision and recall for both satisfaction classes using `f1_weighted`.
 
 ### Best Hyperparameters Found:
 
@@ -37,6 +29,12 @@ The optimization used 5-fold cross-validation and `f1_weighted` as the scoring m
 *   `min_samples_split`: 20
 
 ### Decision Tree Performance (on Test Set):
+
+| Metric              | Not Satisfied | Satisfied | Overall Accuracy |
+| :------------------ | :------------ | :-------- | :--------------- |
+| **Precision**       | 0.92          | 0.96      |                  |
+| **Recall**          | 0.95          | 0.94      |                  |
+| **F1-Score**        | 0.94          | 0.95      | 0.94             |
 
 *   **F1-score for 'Satisfied' class:** 0.9461
 
@@ -65,11 +63,17 @@ To provide a comprehensive view, the Decision Tree model's performance and inter
 
 ### Logistic Regression Performance (on Test Set):
 
+| Metric              | Not Satisfied | Satisfied | Overall Accuracy |
+| :------------------ | :------------ | :-------- | :--------------- |
+| **Precision**       | 0.80          | 0.86      |                  |
+| **Recall**          | 0.84          | 0.82      |                  |
+| **F1-Score**        | 0.82          | 0.84      | 0.83             |
+
 *   **F1-score for 'Satisfied' class:** 0.8411
 
 ### Trade-offs:
 
-*   **Performance:** The optimized **Decision Tree (F1-score: 0.9461)** significantly outperformed the **Logistic Regression (F1-score: 0.8411)** on the 'Satisfied' class, suggesting that the non-linear relationships and interactions captured by the Decision Tree are crucial for this dataset.
+*   **Performance:** The optimized **Decision Tree (Overall Accuracy: 0.94, F1-score for 'Satisfied': 0.9461)** significantly outperformed the **Logistic Regression (Overall Accuracy: 0.83, F1-score for 'Satisfied': 0.8411)** on the 'Satisfied' class, suggesting that the non-linear relationships and interactions captured by the Decision Tree are crucial for this dataset.
 *   **Interpretability:**
     *   **Decision Tree:** Offers high interpretability through its visual tree structure and direct feature importance, making it transparent and auditable for non-technical users to understand the decision logic and identify actionable insights.
     *   **Logistic Regression:** While its coefficients provide insight into feature impact, it assumes linear relationships and is less intuitive for explaining complex decision pathways to stakeholders.
